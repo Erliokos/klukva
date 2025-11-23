@@ -1,0 +1,48 @@
+{
+  "name": "studio",
+  "version": "1.0.0",
+  "description": "Landing page for a web studio with animations and SSR.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "NEXT_DISABLE_TURBOPACK=1 next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "vite": "vite",
+    "vite:build": "vite build"
+  },
+  "keywords": [
+    "nextjs",
+    "vite",
+    "landing",
+    "styled-components",
+    "framer-motion",
+    "threejs"
+  ],
+  "author": "Studio Team",
+  "license": "MIT",
+  "dependencies": {
+    "@react-three/drei": "^9.114.4",
+    "@react-three/fiber": "^8.15.18",
+    "framer-motion": "^11.18.2",
+    "next": "^14.2.13",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.66.1",
+    "styled-components": "^6.1.13",
+    "three": "^0.165.0"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "@types/node": "20.19.25",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@types/styled-components": "^5.1.34",
+    "@vitejs/plugin-react": "^4.3.4",
+    "babel-plugin-styled-components": "^2.1.4",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.13",
+    "typescript": "5.9.3",
+    "vite": "^5.4.10"
+  }
+}
