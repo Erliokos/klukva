@@ -1,10 +1,10 @@
 'use client'
 
-import React, { forwardRef } from 'react'
+import React, { ElementType, forwardRef } from 'react'
 import { motion, MotionProps } from 'framer-motion'
 import styled from 'styled-components'
 
-
+/* Styled root */
 const ButtonBase = styled.button<{ $variant?: 'primary' | 'ghost' }>`
   border: none;
   outline: none;
@@ -12,62 +12,61 @@ const ButtonBase = styled.button<{ $variant?: 'primary' | 'ghost' }>`
   padding: 0.95rem 1.8rem;
   border-radius: 999px;
   font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.01em;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 0.95rem;
 
   color: ${({ $variant, theme }) =>
     $variant === 'ghost' ? theme.colors.contrast : '#fff'};
-
   border: ${({ $variant, theme }) =>
     $variant === 'ghost' ? `1px solid ${theme.colors.border}` : 'none'};
-
   background: ${({ $variant, theme }) =>
     $variant === 'ghost'
       ? 'transparent'
       : `linear-gradient(135deg, ${theme.colors.accent}, ${theme.colors.accentSecondary})`};
-
-  box-shadow: ${({ $variant }) =>
-    $variant === 'ghost' ? 'none' : '0 15px 40px rgba(91, 92, 255, 0.35)'};
-
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-
-  &:hover {
-    box-shadow: 0 20px 50px rgba(91, 92, 255, 0.45);
-  }
 `
 
-// ─────────────────────────────────────────────────────────────
-// TYPES
-// ─────────────────────────────────────────────────────────────
+/* Own props */
+type OwnProps = {
+  variant?: 'primary' | 'ghost'
+  as?: ElementType
+}
 
-// Комбинируем кастомные пропсы + HTML атрибуты + motion-пропсы
-export type ButtonProps = React.ComponentProps<typeof ButtonBase> &
+/* Polymorphic props for consumer — they get MotionProps + ability to pass props of target element.
+   We keep this broad and then cast when passing to MotionBase (library typing limitation). */
+export type ButtonProps = OwnProps &
   MotionProps & {
-    variant?: 'primary' | 'ghost'
+    // allow arbitrary props so TypeScript does not complain when passing href, target, etc.
+    [key: string]: any
   }
 
-// ─────────────────────────────────────────────────────────────
-// COMPONENT
-// ─────────────────────────────────────────────────────────────
+/* Create motion wrapper.
+   motion(ButtonBase) typing is limited and may not accept `as` in its declared props,
+   so we cast it to `any` for flexible usage below. */
+const MotionBase = motion(ButtonBase) as unknown as React.ComponentType<any>
 
-// Создаём motion-компонент с безопасной типизацией
-const MotionButtonBase = motion(ButtonBase)
-
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button({ variant = 'primary', children, ...rest }, ref) {
+/* Polymorphic component with forwardRef.
+   We keep ref typed as generic HTMLElement so it works for button, a, div, etc. */
+export const Button = forwardRef<HTMLElement, ButtonProps>(
+  (
+    { as: Component = 'button', variant = 'primary', children, ...rest },
+    ref
+  ) => {
     return (
-      <MotionButtonBase
-        ref={ref}
+      <MotionBase
+        // pass as and ref using casts to work around library typing restrictions
+        as={Component as any}
+        ref={ref as any}
         $variant={variant}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.97 }}
         {...rest}
       >
         {children}
-      </MotionButtonBase>
+      </MotionBase>
     )
   }
 )
+
+Button.displayName = 'Button'
