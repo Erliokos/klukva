@@ -80,7 +80,7 @@ type FormValues = {
 };
 
 export const Contact = () => {
-  const [status, setStatus] = useState<'idle' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const phoneLink = contacts.phone.replace(/[\\s()-]/g, '');
   const {
     register,
@@ -89,11 +89,29 @@ export const Contact = () => {
     formState: { errors },
   } = useForm<FormValues>({ mode: 'onBlur' });
 
-  const onSubmit = (values: FormValues) => {
-    console.log(values);
-    setStatus('success');
-    reset();
-    setTimeout(() => setStatus('idle'), 3000);
+  const onSubmit = async (values: FormValues) => {
+    setStatus('loading');
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send form');
+      }
+
+      setStatus('success');
+      reset();
+    } catch (error) {
+      console.error(error);
+      setStatus('error');
+    } finally {
+      setTimeout(() => setStatus('idle'), 3000);
+    }
   };
 
   return (
@@ -141,8 +159,11 @@ export const Contact = () => {
               <textarea placeholder="Сообщение" {...register('message', { required: 'Введите сообщение', minLength: 10 })} />
               {errors.message && <ErrorMessage>{errors.message.message || 'Минимум 10 символов'}</ErrorMessage>}
             </div>
-            <Button type="submit">Отправить</Button>
+            <Button type="submit" disabled={status === 'loading'}>
+              {status === 'loading' ? 'Отправляем...' : 'Отправить'}
+            </Button>
             {status === 'success' && <span>Спасибо! Мы вернёмся с ответом.</span>}
+            {status === 'error' && <span>Ошибка отправки. Попробуйте ещё раз.</span>}
           </form>
         </FormCard>
       </Layout>

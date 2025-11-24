@@ -105,7 +105,7 @@ export const technologies = [
 ];
 
 export const contacts = {
-  email: 'hello@studio.digital',
-  phone: '+7 (999) 123-45-67',
-  telegram: '@studio_digital',
+  email: 'albert.murzakov@gmail.com',
+  phone: '+7 (977) 165-60-15',
+  telegram: 'klukva_berry_studio',
 };

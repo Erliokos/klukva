@@ -6,6 +6,18 @@ import { Logo } from '@/components/Logo';
 import { contacts } from '@/lib/content';
 import { fadeInUp, staggerChildren } from '@/lib/motion';
 import { WatermarkPattern } from '@/components/WatermarkPattern';
+import TgLogo from '@/public/assets/telegram_logo.svg'
+import GithubLogo from '@/public/assets/github_logo.svg'
+
+const LogoTg = styled(TgLogo)`
+  width: 32px;
+  height: 32px;
+`
+const LogoGithub = styled(GithubLogo)`
+  width: 32px;
+  height: 32px;
+  fill: white;
+`
 
 const FooterWrapper = styled.footer`
   border-top: 1px solid ${({ theme }) => theme.colors.border};
@@ -142,10 +154,8 @@ const navItems = [
 ];
 
 const socialLinks = [
-  { name: 'Telegram', href: `https://t.me/${contacts.telegram.replace('@', '')}`, icon: '✈️' },
-  { name: 'GitHub', href: 'https://github.com', icon: '💻' },
-  { name: 'LinkedIn', href: 'https://linkedin.com', icon: '💼' },
-  { name: 'Twitter', href: 'https://twitter.com', icon: '🐦' },
+  { name: 'Telegram', href: `https://t.me/${contacts.telegram.replace('@', '')}`, icon: <LogoTg/> },
+  { name: 'GitHub', href: 'https://github.com/erliokos', icon: <LogoGithub/> },
 ];
 
 export const Footer = () => {
@@ -154,32 +164,23 @@ export const Footer = () => {
   return (
     <FooterWrapper>
       <WatermarkPattern count={20} minSize={10} maxSize={100} />
-      <FooterInner variants={staggerChildren} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }}>
+      <FooterInner
+        variants={staggerChildren}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <FooterColumn variants={fadeInUp}>
           <Logo />
           <FooterText>
-            Студия полного цикла: дизайн, разработка, поддержка и продвижение цифровых продуктов.
+            Студия полного цикла: дизайн, разработка, поддержка и продвижение
+            цифровых продуктов.
           </FooterText>
-          <SocialLinks>
-            {socialLinks.map((social) => (
-              <SocialLink
-                key={social.name}
-                href={social.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={social.name}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {social.icon}
-              </SocialLink>
-            ))}
-          </SocialLinks>
         </FooterColumn>
 
         <FooterColumn variants={fadeInUp}>
           <ColumnTitle>Навигация</ColumnTitle>
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <FooterLink key={item.href} href={item.href}>
               {item.label}
             </FooterLink>
@@ -197,22 +198,38 @@ export const Footer = () => {
 
         <FooterColumn variants={fadeInUp}>
           <ColumnTitle>Контакты</ColumnTitle>
-          <FooterLink href={`mailto:${contacts.email}`}>{contacts.email}</FooterLink>
-          <FooterLink href={`tel:${phoneLink}`}>{contacts.phone}</FooterLink>
-          <FooterLink href={`https://t.me/${contacts.telegram.replace('@', '')}`} target="_blank" rel="noreferrer">
-            {contacts.telegram}
+          <FooterLink href={`mailto:${contacts.email}`}>
+            {contacts.email}
           </FooterLink>
+          <FooterLink href={`tel:${phoneLink}`}>{contacts.phone}</FooterLink>
+          <SocialLinks>
+            {socialLinks.map(social => (
+              <SocialLink
+                key={social.name}
+                href={social.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={social.name}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {social.icon}
+              </SocialLink>
+            ))}
+          </SocialLinks>
         </FooterColumn>
       </FooterInner>
 
       <FooterBottom>
-        <Copyright>© {new Date().getFullYear()} Studio. Все права защищены.</Copyright>
+        <Copyright>
+          © {new Date().getFullYear()} Studio. Все права защищены.
+        </Copyright>
         <FooterNav>
           <a href="#top">Наверх</a>
           <a href="#form">Оставить заявку</a>
         </FooterNav>
       </FooterBottom>
     </FooterWrapper>
-  );
+  )
 };
 
