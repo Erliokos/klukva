@@ -18,7 +18,7 @@ export const metadata = {
     siteName: 'Kalina Studio',
     images: [
       {
-        url: 'https://www.kalina-studio.ru/og-image.png',
+        url: 'https://www.kalina-studio.ru/og-image2.png',
         width: 1200,
         height: 630,
         alt: 'Kalina Studio Logo'
