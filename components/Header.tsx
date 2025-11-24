@@ -9,11 +9,13 @@ import { Button } from '@/components/ui/Button';
 import { WatermarkPattern } from '@/components/WatermarkPattern';
 
 const HeaderWrapper = styled.header<{ $height?: string }>`
-  position: sticky;
+  position: fixed;
   height: ${({ $height }) => $height ?? 'auto'};
+  width: 100vw;
   top: 0;
   z-index: 50;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) =>
     theme.mode === 'dark'

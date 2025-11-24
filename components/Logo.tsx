@@ -29,8 +29,8 @@ const LogoImage = styled(LogoSvg)`
 `
 
 const BerryImage = styled(BerrySvg)`
-  height: 15px;
-  width: 15px;
+  height: 20px;
+  width: 20px;
   ${media.sm`
     height: 30px;
     width: 30px;
