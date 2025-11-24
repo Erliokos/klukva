@@ -6,20 +6,28 @@ import './globals.css';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'], variable: '--font-inter' });
 
-export const metadata: Metadata = {
-  title: 'Studio — Современная веб-разработка',
+export const metadata = {
+  title: 'Kalina Studio — Современная веб-разработка',
   description:
     'Студия полного цикла: дизайн, разработка, поддержка и продвижение цифровых продуктов.',
   openGraph: {
-    title: 'Studio — Современная веб-разработка',
+    title: 'Kalina Studio',
     description:
       'Делаем современные сайты под ключ: дизайн, разработка, поддержка и продвижение.',
-    type: 'website',
+    url: 'https://www.kalina-studio.ru',
+    siteName: 'Kalina Studio',
+    images: [
+      {
+        url: 'https://www.kalina-studio.ru/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Kalina Studio Logo'
+      }
+    ],
     locale: 'ru_RU',
-    url: 'https://example.com',
-  },
-  metadataBase: new URL('https://example.com'),
-};
+    type: 'website'
+  }
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
