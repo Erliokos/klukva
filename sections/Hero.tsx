@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { ParticlesCanvas } from '@/components/canvas/ParticlesCanvas';
 import { fadeInUp } from '@/lib/motion';
 import { StarfieldCanvas } from '@/components/canvas/StarfieldCanvas';
+import { media } from '@/styles/GlobalStyles';
 
 const HeroSection = styled.section`
   position: relative;
@@ -70,7 +71,11 @@ const CTAGroup = styled(motion.div)`
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-`;
+  flex-direction: column;
+  ${media.sm`
+    flex-direction: row;
+  `}
+`
 
 const AccentBadge = styled(motion.span)`
   display: inline-flex;

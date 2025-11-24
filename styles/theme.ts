@@ -11,6 +11,14 @@ const baseTheme = {
   shadows: {
     soft: '0 20px 80px rgba(0, 0, 0, 0.25)',
   },
+  breakpoints: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+    '2xl': '1536px',
+  },
+  
 };
 
 export const lightTheme: DefaultTheme = {
@@ -42,3 +50,4 @@ export const darkTheme: DefaultTheme = {
 };
 
 export type AppTheme = typeof lightTheme;
+

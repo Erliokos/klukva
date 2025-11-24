@@ -13,6 +13,13 @@ declare module 'styled-components' {
     shadows: {
       soft: string
     },
+    breakpoints: {
+      sm: string
+      md: string
+      lg: string
+      xl: string
+      '2xl': string
+    },
     mode: string
     colors: {
       background: string

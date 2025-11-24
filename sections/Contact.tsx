@@ -35,7 +35,7 @@ const FormCard = styled(ContactCard)`
   form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2.5rem;
   }
 
   input,
@@ -57,7 +57,21 @@ const FormCard = styled(ContactCard)`
     color: #f87171;
     font-size: 0.85rem;
   }
+  div{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
+
+const ErrorMessage = styled.span`
+  position: absolute;
+  left: 15px;
+  bottom: -27px;
+  font-size: 0.85rem;
+  color: #f87171;
+`
 
 type FormValues = {
   name: string;
@@ -108,7 +122,7 @@ export const Contact = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <input placeholder="Имя" {...register('name', { required: 'Введите имя' })} />
-              {errors.name && <span className="error">{errors.name.message}</span>}
+              {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
             </div>
             <div>
               <input
@@ -121,11 +135,11 @@ export const Contact = () => {
                   },
                 })}
               />
-              {errors.phone && <span className="error">{errors.phone.message}</span>}
+              {errors.phone && <ErrorMessage>{errors.phone.message}</ErrorMessage>}
             </div>
             <div>
               <textarea placeholder="Сообщение" {...register('message', { required: 'Введите сообщение', minLength: 10 })} />
-              {errors.message && <span className="error">{errors.message.message || 'Минимум 10 символов'}</span>}
+              {errors.message && <ErrorMessage>{errors.message.message || 'Минимум 10 символов'}</ErrorMessage>}
             </div>
             <Button type="submit">Отправить</Button>
             {status === 'success' && <span>Спасибо! Мы вернёмся с ответом.</span>}

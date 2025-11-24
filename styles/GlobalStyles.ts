@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
   *, *::before, *::after {
@@ -28,3 +28,26 @@ export const GlobalStyles = createGlobalStyle`
     color: #fff;
   }
 `;
+
+export const media = {
+  sm: (styles: any) => css`
+    @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+      ${styles}
+    }
+  `,
+  md: (styles: any) => css`
+    @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+      ${styles}
+    }
+  `,
+  lg: (styles: any) => css`
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+      ${styles}
+    }
+  `,
+  xl: (styles: any) => css`
+    @media (min-width: ${({ theme }) => theme.breakpoints.xl}) {
+      ${styles}
+    }
+  `,
+}

@@ -1,8 +1,10 @@
 'use client';
 
-import Image from 'next/image';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import LogoSvg from '@/public/assets/klukva.svg'
+import BerrySvg from '@/public/assets/berry_2.svg'
+import { media } from '@/styles/GlobalStyles';
 
 const LogoWrapper = styled(motion.div)`
   display: flex;
@@ -10,16 +12,30 @@ const LogoWrapper = styled(motion.div)`
   gap: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  font-size: 1rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-`;
+  ${media.sm`
+    font-size: 1rem;
+  `}
+`
 
-const LogoImage = styled(Image)`
-  height: auto;
-  width: auto;
-  max-height: 32px;
-  object-fit: contain;
-`;
+const LogoImage = styled(LogoSvg)`
+  height: 48px;
+  width: 48px;
+  ${media.sm`
+    height: 64px;
+    width: 64px;
+  `}
+`
+
+const BerryImage = styled(BerrySvg)`
+  height: 15px;
+  width: 15px;
+  ${media.sm`
+    height: 30px;
+    width: 30px;
+  `}
+`
 
 const LogoMainColor = styled.span`
   color: ${({ theme }) => theme.colors.accentSecondary};
@@ -27,9 +43,9 @@ const LogoMainColor = styled.span`
 
 export const Logo = () => (
   <LogoWrapper whileHover={{ scale: 1.05 }}>
-    <LogoImage src="/assets/klukva.svg" alt="KLUKVA" width={32} height={32} />
+    <LogoImage/>
     <LogoMainColor>KLUKVA</LogoMainColor>
-    <LogoImage src="/assets/berry_2.svg" alt="KLUKVA" width={32} height={32} />
+    <BerryImage/>
     STUDIO
   </LogoWrapper>
 )
