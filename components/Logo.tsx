@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import LogoSvg from '@/public/assets/klukva.svg'
+import LogoSvg from '@/public/assets/kalina.svg'
 import BerrySvg from '@/public/assets/berry_2.svg'
 import { media } from '@/styles/GlobalStyles';
 
@@ -44,7 +44,7 @@ const LogoMainColor = styled.span`
 export const Logo = () => (
   <LogoWrapper whileHover={{ scale: 1.05 }}>
     <LogoImage/>
-    <LogoMainColor>KLUKVA</LogoMainColor>
+    <LogoMainColor>KALINA</LogoMainColor>
     <BerryImage/>
     STUDIO
   </LogoWrapper>

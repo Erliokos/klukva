@@ -90,7 +90,7 @@ export const WatermarkPattern = ({ count = 6, minSize = 40, maxSize = 60 }: Wate
         >
           <SvgImage
             src={mark.variant ? '/assets/berry_2.svg' : '/assets/berry_1.svg'}
-            alt="KLUKVA"
+            alt="KALINA"
             width={mark.size}
             height={mark.size}
             $opacity={(1 / (maxSize - minSize)) * (maxSize - mark.size) - 0.1}
