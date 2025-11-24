@@ -8,16 +8,18 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/Button';
 import { WatermarkPattern } from '@/components/WatermarkPattern';
 
-const HeaderWrapper = styled.header`
+const HeaderWrapper = styled.header<{ $height?: string }>`
   position: sticky;
+  height: ${({ $height }) => $height ?? 'auto'};
   top: 0;
   z-index: 50;
   backdrop-filter: blur(16px);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) =>
-    theme.mode === 'dark' ? 'rgba(5, 6, 13, 0.55)' : 'rgba(246, 247, 251, 0.8)'};
-  overflow: hidden;
-`;
+    theme.mode === 'dark'
+      ? 'rgba(5, 6, 13, 0.55)'
+      : 'rgba(246, 247, 251, 0.8)'};
+`
 
 const HeaderInner = styled.div`
   max-width: ${({ theme }) => theme.sizes.container};
@@ -75,12 +77,15 @@ const Burger = styled.button`
 const MobileMenu = styled(motion.div)`
   position: fixed;
   inset: 0;
-  background: ${({ theme }) => theme.colors.background};
+  top: 76px;
+  height: calc(100vh - 76px);
+  width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 120px 2rem 2rem;
+  padding: 2rem 2rem 2rem;
   gap: 1.5rem;
-`;
+  z-index: 9999; /* убедитесь, что меню поверх всего */
+`
 
 const navItems = [
   { label: 'Услуги', href: '#services' },
@@ -97,7 +102,7 @@ export const Header = () => {
   };
 
   return (
-    <HeaderWrapper>
+    <HeaderWrapper $height={isOpen ? "100vh" : undefined}>
       <WatermarkPattern count={20} minSize={10} maxSize={80} />
       <HeaderInner>
         <Logo />
@@ -110,9 +115,6 @@ export const Header = () => {
         </Nav>
         <Actions>
           <ThemeToggle />
-          <Button as="a" href="#form">
-            Оставить заявку
-          </Button>
           <Burger onClick={() => setIsOpen((prev) => !prev)} aria-label="Меню">
             ☰
           </Burger>

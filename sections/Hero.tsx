@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/Button';
 import { ParticlesCanvas } from '@/components/canvas/ParticlesCanvas';
 import { fadeInUp } from '@/lib/motion';
+import { StarfieldCanvas } from '@/components/canvas/StarfieldCanvas';
 
 const HeroSection = styled.section`
   position: relative;
@@ -89,7 +90,8 @@ const ThreeScene = dynamic(
 
 export const Hero = () => (
   <HeroSection id="top">
-    <ParticlesCanvas />
+    {/* <ParticlesCanvas /> */}
+    <StarfieldCanvas/>
     <ThreeScene />
     <HeroContainer>
       <AccentBadge
