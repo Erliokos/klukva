@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 const Canvas = styled.canvas`
   position: fixed;
@@ -12,228 +12,149 @@ const Canvas = styled.canvas`
   z-index: -10;
 `
 
-const STAR_COLOR = '#fff'
-const STAR_SIZE = 3
-const STAR_MIN_SCALE = 0.2
-const OVERFLOW_THRESHOLD = 50
+interface Particle {
+  x: number
+  y: number
+  radius: number
+  alpha: number
+  vx: number
+  vy: number
+  depth: number
+}
+
+const STAR_COUNT = 1000
 
 export const StarfieldCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const theme = useTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-
     const ctx = canvas.getContext('2d')!
-    let scale = 1
-    let width = 0
-    let height = 0
+    let width = window.innerWidth
+    let height = window.innerHeight
 
-    let stars: { x: number; y: number; z: number }[] = []
-    let pointerX: number | null = null
-    let pointerY: number | null = null
-    let touchInput = false
+    let particles: Particle[] = []
+    let scrollOffset = 0
 
-    const STAR_COUNT = (window.innerWidth + window.innerHeight) / 8
-
-    const velocity = {
-      x: 0,
-      y: 0,
-      tx: 0,
-      ty: 0,
-      z: 0.0005
+    function random(min: number, max: number) {
+      return Math.random() * (max - min) + min
     }
 
-    // ---------------------
-    // ⭐ Создание звёзд
-    // ---------------------
-    function generate() {
-      stars = []
+    function initParticles() {
+      particles = []
+
+      const isDark = theme.mode === 'dark'
+
       for (let i = 0; i < STAR_COUNT; i++) {
-        stars.push({
-          x: 0,
-          y: 0,
-          z: STAR_MIN_SCALE + Math.random() * (1 - STAR_MIN_SCALE)
+        const depth = random(0.3, 1)
+
+        const vx = isDark ? random(0.08, 0.1) * depth : random(-0.1, 0.1)
+
+        const vy = isDark ? random(0.08, 0.1) * depth : random(-0.1, 0.1)
+
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: isDark ? random(0.1, 1.3) * depth : random(0.1, 1.3),
+          alpha: random(0.3, 1),
+          vx,
+          vy,
+          depth
         })
       }
     }
 
-    function placeStar(star: any) {
-      star.x = Math.random() * width
-      star.y = Math.random() * height
-    }
-
-    function recycleStar(star: any) {
-      let direction: 'z' | 'l' | 'r' | 't' | 'b' = 'z'
-
-      const vx = Math.abs(velocity.x)
-      const vy = Math.abs(velocity.y)
-
-      if (vx > 1 || vy > 1) {
-        let axis: 'h' | 'v'
-        if (vx > vy) axis = Math.random() < vx / (vx + vy) ? 'h' : 'v'
-        else axis = Math.random() < vy / (vx + vy) ? 'v' : 'h'
-
-        if (axis === 'h') direction = velocity.x > 0 ? 'l' : 'r'
-        else direction = velocity.y > 0 ? 't' : 'b'
-      }
-
-      star.z = STAR_MIN_SCALE + Math.random() * (1 - STAR_MIN_SCALE)
-
-      if (direction === 'z') {
-        star.z = 0.1
-        star.x = Math.random() * width
-        star.y = Math.random() * height
-      } else if (direction === 'l') {
-        star.x = -OVERFLOW_THRESHOLD
-        star.y = height * Math.random()
-      } else if (direction === 'r') {
-        star.x = width + OVERFLOW_THRESHOLD
-        star.y = height * Math.random()
-      } else if (direction === 't') {
-        star.x = width * Math.random()
-        star.y = -OVERFLOW_THRESHOLD
-      } else if (direction === 'b') {
-        star.x = width * Math.random()
-        star.y = height + OVERFLOW_THRESHOLD
-      }
-    }
-
-    // ---------------------
-    // 📐 Resize
-    // ---------------------
     function resize() {
-      scale = window.devicePixelRatio || 1
-      width = window.innerWidth * scale
-      height = window.innerHeight * scale
-
+      width = window.innerWidth
+      height = window.innerHeight
       //@ts-ignore
       canvas.width = width
       //@ts-ignore
       canvas.height = height
-
-      stars.forEach(placeStar)
+      initParticles()
     }
 
-    // ---------------------
-    // 🎮 Обновление движения
-    // ---------------------
-    function update() {
-      velocity.tx *= 0.96
-      velocity.ty *= 0.96
+    function drawBackground() {
+      const gradient = ctx.createLinearGradient(0, 0, width, height)
+      const isDark = theme.mode === 'dark'
 
-      velocity.x += (velocity.tx - velocity.x) * 0.8
-      velocity.y += (velocity.ty - velocity.y) * 0.8
-
-      stars.forEach(star => {
-        star.x += velocity.x * star.z
-        star.y += velocity.y * star.z
-
-        star.x += (star.x - width / 2) * velocity.z * star.z
-        star.y += (star.y - height / 2) * velocity.z * star.z
-        star.z += velocity.z
-
-        if (
-          star.x < -OVERFLOW_THRESHOLD ||
-          star.x > width + OVERFLOW_THRESHOLD ||
-          star.y < -OVERFLOW_THRESHOLD ||
-          star.y > height + OVERFLOW_THRESHOLD
-        ) {
-          recycleStar(star)
-        }
-      })
-    }
-
-    // ---------------------
-    // 🎨 Рендер звёзд
-    // ---------------------
-    function render() {
-      ctx.clearRect(0, 0, width, height)
-
-      stars.forEach(star => {
-        ctx.beginPath()
-        ctx.lineCap = 'round'
-        ctx.lineWidth = STAR_SIZE * star.z * scale
-        ctx.globalAlpha = 0.5 + Math.random() * 0.5
-        ctx.strokeStyle = STAR_COLOR
-
-        ctx.moveTo(star.x, star.y)
-
-        let tailX = velocity.x * 2
-        let tailY = velocity.y * 2
-        if (Math.abs(tailX) < 0.1) tailX = 0.5
-        if (Math.abs(tailY) < 0.1) tailY = 0.5
-
-        ctx.lineTo(star.x + tailX, star.y + tailY)
-        ctx.stroke()
-      })
-    }
-
-    // ---------------------
-    // 🎬 Анимация
-    // ---------------------
-    function step() {
-      update()
-      render()
-      requestAnimationFrame(step)
-    }
-
-    // ---------------------
-    // 🖱 Управление мышью
-    // ---------------------
-    function movePointer(x: number | null, y: number | null) {
-      if (pointerX !== null && pointerY !== null && x !== null && y !== null) {
-        const ox = x - pointerX
-        const oy = y - pointerY
-
-        velocity.tx += (ox / (8 * scale)) * (touchInput ? 1 : -1)
-        velocity.ty += (oy / (8 * scale)) * (touchInput ? 1 : -1)
+      if (isDark) {
+        gradient.addColorStop(0, '#000000')
+        gradient.addColorStop(0.5, '#110111')
+        gradient.addColorStop(1, '#150026')
+        ctx.fillStyle = gradient
+      } else {
+        ctx.fillStyle = `rgb(250, 250, 250)`
       }
 
-      pointerX = x
-      pointerY = y
+      ctx.fillRect(0, 0, width, height)
     }
 
-    const onMouseMove = (e: MouseEvent) => {
-      touchInput = false
-      movePointer(e.clientX * scale, e.clientY * scale)
+    function drawParticles() {
+      const isDark = theme.mode === 'dark'
+
+      particles.forEach(p => {
+        ctx.beginPath()
+        ctx.arc(
+          p.x,
+          p.y + (isDark ? scrollOffset * 0.05 * p.depth : 0),
+          p.radius,
+          0,
+          Math.PI * 2
+        )
+
+        ctx.fillStyle = isDark
+          ? `rgba(255,255,255,${p.alpha})`
+          : `rgba(139,92,255,${p.alpha})`
+
+        ctx.fill()
+      })
     }
 
-    const onTouchMove = (e: TouchEvent) => {
-      touchInput = true
-      movePointer(e.touches[0].clientX * scale, e.touches[0].clientY * scale)
-      e.preventDefault()
+    function updateParticles() {
+      const isDark = theme.mode === 'dark'
+
+      particles.forEach(p => {
+        p.x += p.vx
+        p.y += p.vy
+
+        // дыхание частиц
+        p.alpha += random(-0.01, 0.01)
+        if (p.alpha < 0.2) p.alpha = 0.2
+        if (p.alpha > 1) p.alpha = 1
+
+        // границы
+        if (p.x < 0) p.x = width
+        if (p.x > width) p.x = 0
+        if (p.y < 0) p.y = height
+        if (p.y > height) p.y = 0
+      })
     }
 
-    const onMouseLeave = () => {
-      pointerX = null
-      pointerY = null
+    function animate() {
+      drawBackground()
+      drawParticles()
+      updateParticles()
+      requestAnimationFrame(animate)
     }
 
-    // ---------------------
-    // 🚀 Запуск
-    // ---------------------
-    generate()
-    resize()
-    step()
+    const onScroll = () => {
+      scrollOffset = window.scrollY
+    }
 
     window.addEventListener('resize', resize)
-    canvas.addEventListener('mousemove', onMouseMove)
-    canvas.addEventListener('touchmove', onTouchMove)
-    canvas.addEventListener('touchend', onMouseLeave)
-    document.addEventListener('mouseleave', onMouseLeave)
+    window.addEventListener('scroll', onScroll)
 
-    // ---------------------
-    // 🧹 Cleanup
-    // ---------------------
+    resize()
+    animate()
+
     return () => {
       window.removeEventListener('resize', resize)
-      canvas.removeEventListener('mousemove', onMouseMove)
-      canvas.removeEventListener('touchmove', onTouchMove)
-      canvas.removeEventListener('touchend', onMouseLeave)
-      document.removeEventListener('mouseleave', onMouseLeave)
+      window.removeEventListener('scroll', onScroll)
     }
-  }, [])
+  }, [theme.mode]) // ← важно: перерисовывать при смене темы
 
   return <Canvas ref={canvasRef} />
 }
