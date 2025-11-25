@@ -26,8 +26,17 @@ export const metadata = {
     ],
     locale: 'ru_RU',
     type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image', // крупная картинка
+    site: '@kalinastudio', // если есть твиттер аккаунт
+    title: 'Kalina Studio — Современная веб-разработка',
+    description:
+      'Студия полного цикла: дизайн, разработка, поддержка и продвижение цифровых продуктов.',
+    images: ['https://www.kalina-studio.ru/og-image2.png']
   }
 }
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
